@@ -27,19 +27,16 @@
             <!-- Card Body -->
             <div class="px-4 py-5">
                 <p class="text-gray-800 mb-3">
-                    <span class="font-bold">Name</span> {{ $post['creator']['name'] }}
+                    <span class="font-bold">Name</span> {{ $post->user?->name }}
                 </p>
                 <p class="text-gray-800 mb-3">
-                    <span class="font-bold">Email</span> {{ $post['creator']['email'] }}
+                    <span class="font-bold">Email</span> {{ $post->user?->email }}
                 </p>
                 <p class="text-gray-800 mb-4">
-                    <span class="font-bold">Created At</span> {{ $post['creator']['created_at'] }}
+                    <span class="font-bold">Created At</span> {{ $post->user?->created_at->diffForHumans() }}
                 </p>
             </div>
         </div>
-
-
-
-    </div>
+<div class="border border-gray-200 rounded p-4 flex flex-col gap-4"> <h3 class="font-bold text-lg">Comments</h3> @foreach($post->comments as $comment) <div class="border p-3 rounded flex flex-col gap-2"> <p>{{ $comment->body }}</p> <!-- Update Comment --> <form method="POST" action="{{ route('comments.update', $comment->id) }}"> @csrf @method('PATCH') <input type="text" name="body" value="{{ $comment->body }}" class="border px-2 py-1"> <button class="bg-blue-500 text-white px-3 py-1 rounded"> Update </button> </form> <!-- Delete Comment --> <form method="POST" action="{{ route('comments.destroy', $comment->id) }}"> @csrf @method('DELETE') <button class="bg-red-500 text-white px-3 py-1 rounded"> Delete </button> </form> </div> @endforeach <!-- Add Comment --> <form method="POST" action="{{ route('comments.store', $post->id) }}"> @csrf <textarea name="body" class="border p-2 w-full"></textarea> <button class="bg-green-500 text-white px-4 py-1 rounded mt-2"> Add Comment </button> </form> </div>
 
 </x-layout>

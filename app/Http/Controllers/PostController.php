@@ -3,78 +3,63 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Post;
+use App\Models\User;
 
 class PostController extends Controller
 {
-    public $posts = [
-            [
-                'id' =>1,
-                'title' => 'first post',
-                'description' => 'some description',
-                'created_at' => '2026-03-11 10:00:00',
-                'creator' => [
-                    'name' => 'Ahmed',
-                    'email' => 'ahmed@gmail.com',
-                    'created_at' => '2024-09-01 08:00:00'
-                ]
-            ],
-            [
-                'id' =>2,
-                'title' => 'second post',
-                'description' => 'some description 2',
-                'created_at' => '2026-03-11 10:00:00',
-                'creator' => [
-                    'name' => 'Kareem',
-                    'email' => 'mohamed@gmail.com',
-                    'created_at' => '2024-09-01 08:00:00'
-                ]
-                ],
-                [
-                    'id' =>3,
-                    'title' => 'third post',
-                    'description' => 'some description 2',
-                    'created_at' => '2026-03-11 10:00:00',
-                    'creator' => [
-                        'name' => 'Ali',
-                        'email' => 'Ali@gmail.com',
-                        'created_at' => '2024-09-01 08:00:00'
-                    ]
-                ]
-        ];
     public function index()
     {
+        $posts = Post::with('user')->paginate(15);
         
-        return view('posts.index',['posts' => $this->posts]);
+        return view('posts.index',['posts' => $posts]);
     }
     
     public function create()
     {
-        return view('posts.create');
+        $users = User::all();
+
+        return view('posts.create',['users' => $users]);
     }
     
     public function show($id)
     {
-        $post = $this->posts[$id-1];
+        $post = Post::find($id);
         
         return view('posts.show',['post' => $post]);
     }
 
-    public function destroy($id)
+    public function destroy(Post $post)
     {
-        $post = $this->posts[$id-1];
-        return view('posts.destroy');
+        $post->delete();
+        return redirect()->route('posts.index')
+        ->with('success', 'Post deleted successfully');
     }
 
     public function edit($id)
     {
-        $post = $this->posts[$id-1];
+        $post = Post::find($id);
+        $users = User::all();
           
-        return view('posts.edit',['post' => $post]);
+        return view('posts.edit',['post' => $post, 'users' => $users]);
     }
 
     public function store()
     {
-        $message = 'Post created successfully';
-        return to_route('posts.index',$message);
+        Post::create([
+            'title' => request('title'),
+            'description' => request('description'),
+            'user_id' => request('user_id'),
+        ]);
+        return to_route('posts.index');
+    }
+    public function update(Post $post)
+    {
+        $post->update([
+            'title' => request('title'),
+            'description' => request('description'),
+            'user_id' => request('user_id'),
+        ]);
+        return to_route('posts.index');
     }
 }

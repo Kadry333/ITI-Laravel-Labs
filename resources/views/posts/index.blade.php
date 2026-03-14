@@ -30,25 +30,35 @@
                 </tr>
             </thead>
             <tbody>
+                @if (session('success'))
+                    <div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-4">
+                        {{ session('success') }}
+                    </div>
+                @endif
                 @foreach ($posts as $post)
                     <tr class="border-b border-gray-100">
                         <td class="py-4 px-4 font-bold text-gray-800">{{ $post['id'] }}</td>
                         <td class="py-4 px-4 text-gray-700">{{ $post['title'] }}</td>
-                        <td class="py-4 px-4 text-gray-700">{{ $post['creator']['name'] }}</td>
-                        <td class="py-4 px-4 text-gray-700">{{ $post['creator']['created_at'] }}</td>
+                        <td class="py-4 px-4 text-gray-700">{{ $post->user?->name }}</td>
+                        <td class="py-4 px-4 text-gray-700">{{ $post->created_at->diffForHumans() }}</td>
                         <td class="py-4 px-4">
                             <div class="flex gap-1">
-                                <a href="{{ route('posts.show', $post['id']) }}"
-                                    class="bg-cyan-500 text-white text-sm px-3 py-1 rounded">View</a>
-                                <a href="{{ route('posts.edit', $post['id']) }}"
-                                    class="bg-blue-500 text-white text-sm px-3 py-1 rounded">Edit</a>
-                                <button onclick="deletePost()" class="bg-red-500 text-white text-sm px-3 py-1 rounded">
-                                    Delete
-                                </button>
+                                <x-button href="{{ route('posts.show', $post->id) }}">Show</x-button>
+                                <x-button href="{{ route('posts.edit', $post->id) }}">Edit</x-button>
+                                <form method="POST" action="{{ route('posts.destroy', $post->id) }}"
+                                    onsubmit="return confirm('Are you sure you want to delete this post?')">
+
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="bg-red-500 text-white px-2 py-1 rounded">
+                                        Delete
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>
                 @endforeach
+
 
                 <!-- add more rows here -->
             </tbody>
@@ -58,12 +68,18 @@
         <p class="text-red-500 font-medium mt-8 mb-3">Pagination in lab 2</p>
 
         <!-- Pagination Controls -->
-        <div class="flex items-center gap-1">
-            <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600">Previous</button>
-            <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600">1</button>
-            <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600">2</button>
-            <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600">3</button>
-            <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600">Next</button>
+        <div class="flex flex-wrap items-center gap-1">
+
+            <a href="{{ $posts->previousPageUrl() }}" class="px-3 py-1 border rounded">Previous</a>
+
+            @for ($i = 1; $i <= $posts->lastPage(); $i++)
+                <a href="{{ $posts->url($i) }}" class="px-3 py-1 border rounded">
+                    {{ $i }}
+                </a>
+            @endfor
+
+            <a href="{{ $posts->nextPageUrl() }}" class="px-3 py-1 border rounded">Next</a>
+
         </div>
 
     </div>
