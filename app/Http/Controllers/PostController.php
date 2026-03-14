@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+// use Illuminate\Http\Request;
 use App\Models\Post;
 use App\Models\User;
+use App\Http\Requests\StorePostRequest;
+use App\Http\Requests\UpdatePostRequest;
+// use Symfony\Component\HttpKernel\HttpCache\Store;
 
 class PostController extends Controller
 {
@@ -44,22 +47,15 @@ class PostController extends Controller
         return view('posts.edit',['post' => $post, 'users' => $users]);
     }
 
-    public function store()
+    public function store(StorePostRequest $request)
     {
-        Post::create([
-            'title' => request('title'),
-            'description' => request('description'),
-            'user_id' => request('user_id'),
-        ]);
+        Post::create($request->validated());
+        
         return to_route('posts.index');
     }
-    public function update(Post $post)
+    public function update(UpdatePostRequest $request, Post $post)
     {
-        $post->update([
-            'title' => request('title'),
-            'description' => request('description'),
-            'user_id' => request('user_id'),
-        ]);
+        $post->update($request->validated());
         return to_route('posts.index');
     }
 }

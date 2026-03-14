@@ -11,6 +11,9 @@
                 <label class="block text-gray-700 mb-2">Title</label>
                 <input type="text" name="title" value="{{ $post->title }}"
                     class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300" />
+                @error('title')
+                    <p class="text-red-500 text-m mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- Description -->
@@ -20,11 +23,14 @@
                     class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 resize-y">
 {{ $post->description }}
 </textarea>
+@error('description')
+                    <p class="text-red-500 text-m mt-1">{{ $message }}</p>
+                @enderror
             </div>
 
             <!-- Post Creator -->
-           
-<div class="mb-6">
+
+            <div class="mb-6">
                 <label class="block text-gray-700 mb-2">Post Creator</label>
 
                 <select name="user_id"
