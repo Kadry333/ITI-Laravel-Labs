@@ -23,8 +23,11 @@ Route::delete('posts/{post}',[PostController::class,'destroy'])->name('posts.des
 
 Route::get('posts/{post}',[PostController::class,'show'])->name('posts.show');
 
+Route::get('/prune-posts', function () {
+    \App\Jobs\PruneOldPostsJob::dispatch();
 
-
+    return "Job dispatched!";
+});
 Route::post('/posts/{post}/comments', [CommentController::class,'store'])->name('comments.store');
 Route::delete('/comments/{comment}', [CommentController::class,'destroy'])->name('comments.destroy');
 Route::patch('/comments/{comment}', [CommentController::class,'update'])->name('comments.update');

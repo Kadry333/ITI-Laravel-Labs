@@ -27,6 +27,7 @@ class UpdatePostRequest extends FormRequest
             Rule::unique('posts')->ignore($this->post)],
             'description' => 'required|min:10',
             'user_id' => 'required|exists:users,id',
+            'image' => 'nullable|image|mimes:jpg,png',
         ];
     }
 }

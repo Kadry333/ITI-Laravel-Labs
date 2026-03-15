@@ -24,6 +24,7 @@
                 <tr class="border-b-2 border-gray-200">
                     <th class="text-left py-3 px-4 text-gray-700 font-semibold w-16">ID</th>
                     <th class="text-left py-3 px-4 text-gray-700 font-semibold">Title</th>
+                    <th class="text-left py-3 px-4 text-gray-700 font-semibold">Slug</th>
                     <th class="text-left py-3 px-4 text-gray-700 font-semibold">Posted By</th>
                     <th class="text-left py-3 px-4 text-gray-700 font-semibold">Created At</th>
                     <th class="text-left py-3 px-4 text-gray-700 font-semibold">Actions</th>
@@ -37,15 +38,16 @@
                 @endif
                 @foreach ($posts as $post)
                     <tr class="border-b border-gray-100">
-                        <td class="py-4 px-4 font-bold text-gray-800">{{ $post['id'] }}</td>
-                        <td class="py-4 px-4 text-gray-700">{{ $post['title'] }}</td>
+                        <td class="py-4 px-4 font-bold text-gray-800">{{ $post->id }}</td>
+                        <td class="py-4 px-4 text-gray-700">{{ $post->title }}</td>
+                        <td class="py-4 px-4 text-gray-700">{{ $post->slug }}</td>
                         <td class="py-4 px-4 text-gray-700">{{ $post->user?->name }}</td>
                         <td class="py-4 px-4 text-gray-700">{{ $post->created_at->diffForHumans() }}</td>
                         <td class="py-4 px-4">
                             <div class="flex gap-1">
-                                <x-button href="{{ route('posts.show', $post->id) }}">Show</x-button>
-                                <x-button href="{{ route('posts.edit', $post->id) }}">Edit</x-button>
-                                <form method="POST" action="{{ route('posts.destroy', $post->id) }}"
+                                <x-button href="{{ route('posts.show', $post) }}">Show</x-button>
+                                <x-button href="{{ route('posts.edit', $post) }}">Edit</x-button>
+                                <form method="POST" action="{{ route('posts.destroy', $post) }}"
                                     onsubmit="return confirm('Are you sure you want to delete this post?')">
 
                                     @csrf

@@ -7,55 +7,77 @@ use App\Models\Post;
 use App\Models\User;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use Cviebrock\EloquentSluggable\Sluggable;
+use App\Jobs\PruneOldPostsJob;
+use Illuminate\Support\Facades\Storage;
+
+
+
 // use Symfony\Component\HttpKernel\HttpCache\Store;
 
 class PostController extends Controller
 {
+
     public function index()
     {
         $posts = Post::with('user')->paginate(15);
-        
-        return view('posts.index',['posts' => $posts]);
+
+
+        return view('posts.index', ['posts' => $posts]);
     }
-    
+
     public function create()
     {
         $users = User::all();
 
-        return view('posts.create',['users' => $users]);
+        return view('posts.create', ['users' => $users]);
     }
-    
-    public function show($id)
+
+    public function show(Post $post)
     {
-        $post = Post::find($id);
-        
-        return view('posts.show',['post' => $post]);
+
+
+        return view('posts.show', ['post' => $post]);
     }
 
     public function destroy(Post $post)
     {
+
+        if ($post->image) {
+            Storage::disk('public')->delete($post->image);
+        }
+
         $post->delete();
+
         return redirect()->route('posts.index')
-        ->with('success', 'Post deleted successfully');
+            ->with('success', 'Post deleted successfully');
     }
 
-    public function edit($id)
+    public function edit(Post $post)
     {
-        $post = Post::find($id);
         $users = User::all();
-          
-        return view('posts.edit',['post' => $post, 'users' => $users]);
+
+        return view('posts.edit', ['post' => $post, 'users' => $users]);
     }
 
     public function store(StorePostRequest $request)
     {
-        Post::create($request->validated());
-        
+        $data = $request->validated();
+
+        Post::create($data);
+
         return to_route('posts.index');
     }
     public function update(UpdatePostRequest $request, Post $post)
     {
-        $post->update($request->validated());
+        if ($request->hasFile('image')) {
+            Storage::disk('public')->delete($post->image);
+        }
+        $data = $request->validated();
+
+
+        $post->update($data);
+
         return to_route('posts.index');
     }
 }

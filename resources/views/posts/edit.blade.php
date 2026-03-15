@@ -2,7 +2,7 @@
 
     <!-- Form -->
     <div class="max-w-4xl mx-auto px-6 py-10">
-        <form action="{{ route('posts.update', $post->id) }}" method="POST">
+        <form action="{{ route('posts.update', $post) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PATCH')
 
@@ -23,7 +23,7 @@
                     class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-300 resize-y">
 {{ $post->description }}
 </textarea>
-@error('description')
+                @error('description')
                     <p class="text-red-500 text-m mt-1">{{ $message }}</p>
                 @enderror
             </div>
@@ -44,6 +44,20 @@
 
                 </select>
             </div>
+            @if ($post->image)
+                <div class="mb-2">
+                    <p class="text-sm text-gray-600">Current Image</p>
+                    <img src="{{ asset('storage/' . $post->image) }}" width="120" class="rounded">
+                </div>
+            @endif
+
+            <div>
+                <label class="block text-sm font-medium">Change Image</label>
+                <input type="file" name="image" accept=".jpg,.png" class="mt-1">
+            </div>
+            @error('image')
+                <p class="text-red-500 text-sm">{{ $message }}</p>
+            @enderror
             <!-- Create Button -->
             <div class="mb-6">
                 <button type="submit"
