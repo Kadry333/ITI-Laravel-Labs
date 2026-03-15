@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 // use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-
+use App\Rules\MaxPostsPerUser;
 class StorePostRequest extends FormRequest
 {
     /**
@@ -23,7 +23,7 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|min:3|unique:posts,title',
+            'title' => ['required','min:3','unique:posts',new MaxPostsPerUser()],
             'description' => 'required|min:10',
             'user_id' => 'required|exists:users,id',
             'image' => 'nullable|image|mimes:jpg,png',

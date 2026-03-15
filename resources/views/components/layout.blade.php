@@ -13,7 +13,7 @@
     <!-- Navbar -->
     <nav class="bg-gray-800 text-white px-6 py-3 flex items-center gap-6">
         <span class="font-semibold text-lg">ITI Blog</span>
-        <a href="#" class="text-gray-300 text-sm">All Posts</a>
+        <a href="{{ route('posts.index') }}" class="text-gray-300 text-sm">All Posts</a>
     </nav>
     {{ $slot }}
 
